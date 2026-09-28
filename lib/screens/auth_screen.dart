@@ -6,12 +6,35 @@ import '../core/story_api.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/language_selector.dart';
 
-class AuthScreen extends StatefulWidget {
-  const AuthScreen({
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({required this.api, required this.session, super.key});
+
+  final StoryApi api;
+  final SessionController session;
+
+  @override
+  Widget build(BuildContext context) {
+    return _AuthForm(api: api, session: session, isRegister: false);
+  }
+}
+
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({required this.api, required this.session, super.key});
+
+  final StoryApi api;
+  final SessionController session;
+
+  @override
+  Widget build(BuildContext context) {
+    return _AuthForm(api: api, session: session, isRegister: true);
+  }
+}
+
+class _AuthForm extends StatefulWidget {
+  const _AuthForm({
     required this.api,
     required this.session,
     required this.isRegister,
-    super.key,
   });
 
   final StoryApi api;
@@ -19,10 +42,10 @@ class AuthScreen extends StatefulWidget {
   final bool isRegister;
 
   @override
-  State<AuthScreen> createState() => _AuthScreenState();
+  State<_AuthForm> createState() => _AuthFormState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _AuthFormState extends State<_AuthForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -52,7 +75,11 @@ class _AuthScreenState extends State<AuthScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.accountCreated)),
         );
-        context.go('/login');
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go('/login');
+        }
       } else {
         final result = await widget.api.login(
           email: _emailController.text.trim(),
@@ -67,14 +94,15 @@ class _AuthScreenState extends State<AuthScreen> {
       }
     } on ApiException catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.message)),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(error.message)));
       }
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.connectionError)),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.connectionError),
+          ),
         );
       }
     } finally {
@@ -114,11 +142,10 @@ class _AuthScreenState extends State<AuthScreen> {
                   const SizedBox(height: 8),
                   Text(
                     isRegister
-                      ? strings.registerSubtitle
-                      : strings.loginSubtitle,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: const Color(0xFF6D716B),
-                    ),
+                        ? strings.registerSubtitle
+                        : strings.loginSubtitle,
+                    style: Theme.of(context).textTheme.bodyLarge
+                        ?.copyWith(color: const Color(0xFF6D716B)),
                   ),
                   const SizedBox(height: 30),
                   Form(
@@ -170,7 +197,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               : const [AutofillHints.password],
                           onFieldSubmitted: (_) => _submit(),
                           decoration: InputDecoration(
-                                hintText: strings.passwordHint,
+                            hintText: strings.passwordHint,
                             suffixIcon: IconButton(
                               tooltip: _obscurePassword
                                   ? strings.showPassword
@@ -222,11 +249,21 @@ class _AuthScreenState extends State<AuthScreen> {
                     child: TextButton(
                       onPressed: _isSubmitting
                           ? null
-                          : () => context.go(isRegister ? '/login' : '/register'),
+                          : () {
+                              if (isRegister) {
+                                if (context.canPop()) {
+                                  context.pop();
+                                } else {
+                                  context.go('/login');
+                                }
+                              } else {
+                                context.push('/register');
+                              }
+                            },
                       child: Text(
                         isRegister
-                          ? strings.switchToLogin
-                          : strings.switchToRegister,
+                            ? strings.switchToLogin
+                            : strings.switchToRegister,
                         style: const TextStyle(color: Color(0xFF355C4A)),
                       ),
                     ),

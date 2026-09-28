@@ -16,11 +16,7 @@ const _green = Color(0xFF355C4A);
 const _rust = Color(0xFFB9513C);
 
 class StoriesScreen extends StatefulWidget {
-  const StoriesScreen({
-    required this.api,
-    required this.session,
-    super.key,
-  });
+  const StoriesScreen({required this.api, required this.session, super.key});
 
   final StoryApi api;
   final SessionController session;
@@ -106,7 +102,7 @@ class _StoriesScreenState extends State<StoriesScreen> {
                   _FeedError(
                     message: snapshot.error is ApiException
                         ? (snapshot.error! as ApiException).message
-                      : strings.feedLoadError,
+                        : strings.feedLoadError,
                     onRetry: _refresh,
                   )
                 else if (stories.isEmpty)
@@ -233,7 +229,9 @@ class _StoryCard extends StatelessWidget {
                         radius: 16,
                         backgroundColor: const Color(0xFFE8E9DC),
                         child: Text(
-                          story.name.isEmpty ? '?' : story.name[0].toUpperCase(),
+                          story.name.isEmpty
+                              ? '?'
+                              : story.name[0].toUpperCase(),
                           style: const TextStyle(
                             color: _green,
                             fontWeight: FontWeight.w700,
@@ -299,9 +297,8 @@ class _StoryPhoto extends StatelessWidget {
       url,
       fit: BoxFit.cover,
       errorBuilder: (context, error, stackTrace) => const _PhotoFallback(),
-      loadingBuilder: (context, child, progress) => progress == null
-          ? child
-          : const _PhotoFallback(isLoading: true),
+      loadingBuilder: (context, child, progress) =>
+          progress == null ? child : const _PhotoFallback(isLoading: true),
     );
   }
 }
@@ -481,10 +478,8 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
               const SizedBox(height: 22),
               Text(
                 story.description,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: _ink,
-                  height: 1.65,
-                ),
+                style: Theme.of(context).textTheme.bodyLarge
+                    ?.copyWith(color: _ink, height: 1.65),
               ),
             ],
           );
@@ -495,11 +490,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
 }
 
 class AddStoryScreen extends StatefulWidget {
-  const AddStoryScreen({
-    required this.api,
-    required this.session,
-    super.key,
-  });
+  const AddStoryScreen({required this.api, required this.session, super.key});
 
   final StoryApi api;
   final SessionController session;
@@ -551,15 +542,13 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
     final image = _image;
     final description = _descriptionController.text.trim();
     if (image == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(strings.photoRequired)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(strings.photoRequired)));
       return;
     }
     if (description.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(strings.descriptionRequired)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(strings.descriptionRequired)));
       return;
     }
     setState(() => _isSubmitting = true);
@@ -570,21 +559,18 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
         description: description,
       );
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(strings.storyAdded)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(strings.storyAdded)));
       context.pop(true);
     } on ApiException catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.message)),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(error.message)));
       }
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(strings.storyUploadFailed)),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(strings.storyUploadFailed)));
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -664,7 +650,9 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                               : () => _pickImage(ImageSource.gallery),
                           icon: const Icon(Icons.photo_library_outlined),
                           label: Text(
-                            _image == null ? strings.gallery : strings.replacePhoto,
+                            _image == null
+                                ? strings.gallery
+                                : strings.replacePhoto,
                           ),
                           style: OutlinedButton.styleFrom(
                             minimumSize: const Size.fromHeight(48),
@@ -699,10 +687,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                   const SizedBox(height: 24),
                   Text(
                     strings.descriptionTitle,
-                    style: TextStyle(
-                      color: _ink,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: TextStyle(color: _ink, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 8),
                   TextField(
@@ -752,12 +737,32 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
 
 String _formatDate(DateTime date, String locale) {
   const englishMonths = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   const indonesianMonths = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-    'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'Mei',
+    'Jun',
+    'Jul',
+    'Agu',
+    'Sep',
+    'Okt',
+    'Nov',
+    'Des',
   ];
   final months = locale == 'en' ? englishMonths : indonesianMonths;
   final local = date.toLocal();

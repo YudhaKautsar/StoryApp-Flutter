@@ -47,26 +47,18 @@ class _StoryAppState extends State<StoryApp> {
         GoRoute(path: '/', builder: (context, state) => const LoadingScreen()),
         GoRoute(
           path: '/login',
-          builder: (context, state) => AuthScreen(
-            api: _api,
-            session: _session,
-            isRegister: false,
-          ),
+          builder: (context, state) =>
+              LoginScreen(api: _api, session: _session),
         ),
         GoRoute(
           path: '/register',
-          builder: (context, state) => AuthScreen(
-            api: _api,
-            session: _session,
-            isRegister: true,
-          ),
+          builder: (context, state) =>
+              RegisterScreen(api: _api, session: _session),
         ),
         GoRoute(
           path: '/stories',
-          builder: (context, state) => StoriesScreen(
-            api: _api,
-            session: _session,
-          ),
+          builder: (context, state) =>
+              StoriesScreen(api: _api, session: _session),
         ),
         GoRoute(
           path: '/stories/:id',
@@ -78,10 +70,8 @@ class _StoryAppState extends State<StoryApp> {
         ),
         GoRoute(
           path: '/add',
-          builder: (context, state) => AddStoryScreen(
-            api: _api,
-            session: _session,
-          ),
+          builder: (context, state) =>
+              AddStoryScreen(api: _api, session: _session),
         ),
       ],
     );

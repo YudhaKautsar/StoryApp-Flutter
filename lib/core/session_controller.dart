@@ -30,7 +30,10 @@ class SessionController extends ChangeNotifier {
     }
   }
 
-  Future<void> saveSession({required String token, required String name}) async {
+  Future<void> saveSession({
+    required String token,
+    required String name,
+  }) async {
     final preferences = _preferences ?? await SharedPreferences.getInstance();
     _preferences = preferences;
     await preferences.setString(_tokenKey, token);

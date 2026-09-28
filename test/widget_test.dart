@@ -14,8 +14,25 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:story_app_flutter/core/session_controller.dart';
 import 'package:story_app_flutter/core/story.dart';
 import 'package:story_app_flutter/core/story_api.dart';
+import 'package:story_app_flutter/main.dart';
 
 void main() {
+  testWidgets('system back from register returns to login', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await tester.pumpWidget(const StoryApp());
+    await tester.pumpAndSettle();
+
+    expect(find.text('Senang melihatmu.'), findsOneWidget);
+    await tester.tap(find.text('Belum punya akun? Daftar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Mulai bercerita.'), findsOneWidget);
+
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Senang melihatmu.'), findsOneWidget);
+  });
+
   test('parses a story returned by the API', () {
     final story = Story.fromJson({
       'id': 'story-1',
